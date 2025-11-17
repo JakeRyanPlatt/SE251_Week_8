@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.get('/favicon.ico', (req, res) => res.status(204));
 hbs.registerPartials(__dirname + '/views/partials', function (err) {});
 
-
+// read file from highscores.json
 const readFile = (path)=>{
   return new Promise(
     (resolve, reject)=>
@@ -27,23 +27,39 @@ const readFile = (path)=>{
       });
     })
 }
+// write file to highscores.json
+const writeFile = (path, data)=> {
+  return new Promise(
+    (resolve, reject)=>
+    {
+      fs.writeFile(path, data, (err) => {
+        if (err) {
+          reject(err);
+        }
+        else
+        {
+          resolve();
+        }
+      });
+    })
+  }
 
 app.get(`/`, (req, res)=>{
   const filePath = path.join(__dirname, `public`, `index.html`)
   res.sendFile(filePath);
 })
 
-app.get('/jeep', async (req, res) => {
-  var data = await readFile(`./data/jeep.json`);
+app.get('/highscores', async (req, res) => {
+  var data = await readFile(`./data/highscores.json`);
   res.send(JSON.parse(data));
   });
 
-app.post('/jeep', async (req, res) => { 
-    var oldData =  await readFile(`./data/jeep.json`)
+app.post('/highscores', async (req, res) => { 
+    var oldData =  await readFile(`./data/highscores.json`)
     var newData =  await JSON.parse(oldData)
     newData.push(req.body)
     const jsonString = JSON.stringify(newData);
-    await fs.writeFile('./data/jeep.json', jsonString, err => {
+    await fs.writeFile('./data/highscores.json', jsonString, err => {
       if (err) {
           console.log('Error writing file', err)
       } else {
@@ -54,7 +70,9 @@ app.post('/jeep', async (req, res) => {
 });
 
 //Start up the server on port 3000.
-var port = process.env.PORT || 80
+var port = process.env.PORT || 3000
 app.listen(port, ()=>{
-    console.log("Server Running at Localhost:80")
+    console.log("Server Running at Localhost:3000")
 })
+
+//[{"name":0,"score":0}]'

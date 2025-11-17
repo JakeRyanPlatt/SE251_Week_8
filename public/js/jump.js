@@ -1,4 +1,10 @@
 //canvas and context
+
+let highScore = localStorage.getItem(`highscore`);
+if(highScore == null)
+{
+    highScore = 0;
+}
 var c = document.querySelector(`#jump`);
 var ctx = c.getContext(`2d`);
 var states = [];
@@ -39,7 +45,7 @@ function init()
 
 states[`death`] = function()
 {
-    window.location = `hs.html`
+    window.location = `index.html`
    
 }
 states[`pause`] = function(){
@@ -81,14 +87,30 @@ states[`game`] = function()
             i.y = -i.h
             i.x = rand(0, c.width)
         }
+         // write a function that takes the current score and compares it to the high score
+        // if the current score is higher than the high score, update the high score to show the 5 most high scores
+        if(i.collidePoint(player.bottom()) && player.vy > 1){
+            scoreBoard[0].innerHTML = `Score: ${player.score}`;
+            scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
+         }
+            for(let i = 0; i < scoreBoard.value; i++){
+                if(player.score >= player.highscore)
+            {
+                player.highscore = player.score;
+                scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
+                console.log(player.highscore);
+                localStorage.setItem(`highscore`, player.highscore);
+            }
+            }
+            
+
         while(i.collidePoint(player.bottom()) && player.vy > 1)
         {
             console.log(0)
             player.y--;
             player.vy = -30;
             ground.x = 10000;
-            player.score += 2;
-            console.log(player.score)
+            player.score += 1;
         }
     })
 
