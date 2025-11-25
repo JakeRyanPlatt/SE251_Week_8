@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Champion",
+        "score": 500
+    },
+    {
+        "name": "RunnerUp",
+        "score": 400
+    },
+    {
+        "name": "Player3",
+        "score": 300
+    },
+    {
+        "name": "Newbie",
+        "score": 100
+    },
+    {
+        "name": "Guest",
+        "score": 50
+    }
+]
