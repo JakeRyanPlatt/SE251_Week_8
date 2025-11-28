@@ -1,1 +1,9 @@
-[{"make":"Chevy","model":"Corvette","year":"2010"},{"make":"Chevy","model":"Corvette","year":"2010"},{"make":"bobby","model":"Corvette","year":"2010"}]
+ [{
+
+    {"rank": 1, "player": "Player1", "score": 800},
+    {"rank": 2, "player": "Player2", "score": 800},
+    {"rank": 3, "player": "Player3", "score": 800},
+    {"rank": 4, "player": "Player4", "score": 800},
+    {"rank": 5, "player": "Player5", "score": 800},
+
+ }]

@@ -1,6 +1,7 @@
 //canvas and context
 
 let highScore = localStorage.getItem(`highscore`);
+let score = localStorage.getItem(`score`);
 if(highScore == null)
 {
     highScore = 0;
@@ -13,7 +14,7 @@ var o = [];
 var timer, currentState;
 var scoreBoard;
 
-var player = new Box().setProps({x: c.width/2, w:64 , h:64,  force:1, fill:`#ffff00`});
+var player = new Box().setProps({x: c.width/2, w:64 , h:64,  force:1, fill:`#ffff00`, score: 0, highscore: highScore});
 var ground = new Box().setProps({fill:`#00ff00`, h:64, w:c.width, y:c.height });
 var plat = [
     new Box().setProps({fill:`#883333`, h:64, w:200, y:-c.height/2, vy:5 }),
@@ -52,6 +53,8 @@ states[`pause`] = function(){
     o.forEach(function (i){
         i.draw()
     })
+    scoreBoard[0].innerHTML = `Score: ${player.score}`;
+    scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
     if(keys[`Escape`])
     {
         currentState =`game`
@@ -60,6 +63,11 @@ states[`pause`] = function(){
 }
 states[`game`] = function()
 {
+    if(keys[`Escape`])
+    {
+        currentState = `pause`;
+        return;
+    }
 
     if(keys[`ArrowLeft`])
     {
@@ -87,22 +95,17 @@ states[`game`] = function()
             i.y = -i.h
             i.x = rand(0, c.width)
         }
-         // write a function that takes the current score and compares it to the high score
-        // if the current score is higher than the high score, update the high score to show the 5 most high scores
+        
         if(i.collidePoint(player.bottom()) && player.vy > 1){
-            scoreBoard[0].innerHTML = `Score: ${player.score}`;
-            scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
-         }
-            for(let i = 0; i < scoreBoard.value; i++){
-                if(player.score >= player.highscore)
+            if(player.score > player.highscore)
             {
                 player.highscore = player.score;
-                scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
-                console.log(player.highscore);
                 localStorage.setItem(`highscore`, player.highscore);
             }
-            }
-            
+            localStorage.setItem(`score`, player.score);
+            scoreBoard[0].innerHTML = `Score: ${player.score}`;
+            scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
+        }
 
         while(i.collidePoint(player.bottom()) && player.vy > 1)
         {
@@ -135,14 +138,14 @@ states[`game`] = function()
     //draw the objects (Uses the array forEach function where i is the object stored in the o Array)
     o.forEach(function (i){
         i.draw()
-    })
-}
+
+    scoreBoard[0].innerHTML = `Score: ${player.score}`;
+    scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
+            scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
+    });
+
 
 function rand(low, high)
 {
     return Math.random() * (high - low) + low;
-}
-
-
-
-
+}};

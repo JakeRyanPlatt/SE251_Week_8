@@ -18,7 +18,13 @@ main{
     height:50px;
 }
 #score div{
-    position:relative;
+    display :flex;
+    justify-content: space-between;
+    height: 50px;
+    width: 200px;
+    position: relative;
+
+
 }
 #score div p{
     position:absolute;

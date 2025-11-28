@@ -55,9 +55,18 @@ app.get('/highscores', async (req, res) => {
   });
 
 app.post('/highscores', async (req, res) => { 
-    var oldData =  await readFile(`./data/highscores.json`)
-    var newData =  await JSON.parse(oldData)
-    newData.push(req.body)
+    var oldData =  await readFile(`./data/highscores.json`, 'utf8');
+    var existingScores = JSON.parse(oldData);
+    var newScore =  req.body;
+    var newData = existingScores;
+
+    // sort the scores and keep only the top 5
+    existingScores.push(newScore);
+    existingScores.sort((a, b) => b.score - a.score);
+    if(existingScores.length > 5){
+      newData = existingScores.slice(0, 5);
+  }
+    newScore.push(req.body)
     const jsonString = JSON.stringify(newData);
     await fs.writeFile('./data/highscores.json', jsonString, err => {
       if (err) {
