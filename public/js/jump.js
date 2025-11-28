@@ -46,8 +46,19 @@ function init()
 
 states[`death`] = function()
 {
-    window.location = `index.html`
-   
+    clearTimeout(timer);
+    
+    const playerName = prompt('Game Over! Enter your name for the leaderboard:');
+    
+    if (playerName) {
+        submitScore(playerName, player.score).then(() => {
+            loadLeaderboard();
+            showLeaderboard();
+        });
+    } else {
+        window.location = `index.html`;
+        states[`game`]();
+    }
 }
 states[`pause`] = function(){
     o.forEach(function (i){
@@ -138,14 +149,78 @@ states[`game`] = function()
     //draw the objects (Uses the array forEach function where i is the object stored in the o Array)
     o.forEach(function (i){
         i.draw()
-
+    })
     scoreBoard[0].innerHTML = `Score: ${player.score}`;
     scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
-            scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
-    });
-
+}
 
 function rand(low, high)
 {
     return Math.random() * (high - low) + low;
-}};
+}
+
+// Fetch and display leaderboard
+async function loadLeaderboard() {
+    try {
+        const response = await fetch('/highscores');
+        const scores = await response.json();
+        
+        const leaderboardList = document.getElementById('highscores-list');
+        leaderboardList.innerHTML = '';
+        
+        scores.forEach((score, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${score.player} - ${score.score}`;
+            leaderboardList.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+    }
+}
+
+// Submit score to server
+async function submitScore(playerName, score) {
+    try {
+        const response = await fetch('/highscores', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ player: playerName, score: score })
+        });
+        
+        const result = await response.json();
+        console.log('Score submitted:', result);
+        return result;
+    } catch (error) {
+        console.error('Error submitting score:', error);
+    }
+}
+
+// Show leaderboard screen
+function showLeaderboard() {
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('leaderboard').style.display = 'block';
+}
+
+// Reset game and play again
+function playAgain() {
+    // Reset player
+    player.score = 0;
+    player.highscore = localStorage.getItem(`highscore`) || 0;
+    player.x = c.width/2;
+    player.y = 0;
+    player.vx = 0;
+    player.vy = 0;
+    
+    // Reset platforms
+    plat[0].y = -c.height/2;
+    plat[1].y = -c.height;
+    
+    // Reset UI
+    document.getElementById('game').style.display = 'block';
+    document.getElementById('leaderboard').style.display = 'none';
+    
+    // Restart game
+    init();
+}

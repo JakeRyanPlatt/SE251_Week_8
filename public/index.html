@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PONG</title>
+    <title>Jump Game</title>
     <link rel="stylesheet" href="css/jump.css">
 </head>
 <body>
@@ -13,22 +13,24 @@
             <div id="score">
                 <div>
                     <p class="score">score: 0</p>
-                    <!--<p class="anim">0</p>-->
                 </div>
                 <div>
                     <p class="score">highscore: 0</p>
-                    <!--<p class="anim">0</p>-->
                 </div>
             </div>
             <canvas id="jump" width="800" height="800"></canvas>
+        </section>
+        
+        <section id="leaderboard" style="display: none; margin-top: 20px;">
+            <h2>Top 5 Scores</h2>
+            <ol id="highscores-list">
+            </ol>
+            <button onclick="playAgain()">Play Again</button>
         </section>
     </main>
 
     <script src="js/Box.js"></script>
     <script src="js/keyboard.js"></script>
-    <script src="js/jump.js"></script>   
-    
-        
- 
+    <script src="js/jump.js"></script>
 </body>
 </html>
