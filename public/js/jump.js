@@ -14,34 +14,71 @@ var o = [];
 var timer, currentState;
 var scoreBoard;
 
-var player = new Box().setProps({x: c.width/2, w:64 , h:64,  force:1, fill:`#ffff00`, score: 0, highscore: highScore});
-var ground = new Box().setProps({fill:`#00ff00`, h:64, w:c.width, y:c.height });
+var player = new Box().setProps({ x: c.width / 2, w: 64, h: 64, force: 1, fill: `#ffff00` });
+var ground = new Box().setProps({ fill: `#00ff00`, h: 64, w: c.width, y: c.height });
 var plat = [
-    new Box().setProps({fill:`#883333`, h:64, w:200, y:-c.height/2, vy:5 }),
-    new Box().setProps({fill:`#883333`, h:64, w:200, y:-c.height, vy:5}),
+    new Box().setProps({ fill: `#883333`, h: 64, w: 200, y: -c.height / 2, vy: 5 }),
+    new Box().setProps({ fill: `#883333`, h: 64, w: 200, y: -c.height, vy: 5 }),
 ]
-init();
+
+// init(); // Don't auto-start
 
 //Main Game Loop
-function main()
-{
+function main() {
     //erases the canvas
-    ctx.clearRect(0,0,c.width,c.height);
+    ctx.clearRect(0, 0, c.width, c.height);
     states[currentState]();
 }
 
-function init()
-{   
+window.startGame = function () {
+    init();
+}
+
+
+
+function init() {
+    // Apply Options
+    const boxColorInput = document.getElementById('box-color');
+    const bgSelect = document.getElementById('bg-select');
+
+    if (boxColorInput) {
+        player.fill = boxColorInput.value;
+    }
+
+
+
+    if (bgSelect) {
+        if (bgSelect.value === 'rainy') {
+            document.body.classList.add('rainy-forest');
+        } else {
+            document.body.classList.remove('rainy-forest');
+        }
+    }
+
     //pad 1 and 2
     o[0] = player
     o[1] = ground
     o[2] = plat[0]
     o[3] = plat[1]
+
+    // Reset player position and velocity
+    player.x = c.width / 2;
+    player.y = 0;
+    player.vx = 0;
+    player.vy = 0;
+    player.score = 0;
+
     scoreBoard = document.querySelectorAll(`#score div p`);
     currentState = `game`;
     //timer to make the game run at 60fps
-    clearTimeout(timer);
-    timer = setInterval(main, 1000/60);
+    clearInterval(timer);
+    timer = setInterval(main, 1000 / 60);
+}
+
+window.stopGame = function () {
+    console.log("Stopping game loop...");
+    clearInterval(timer);
+    timer = null;
 }
 
 states[`death`] = function()
@@ -60,8 +97,9 @@ states[`death`] = function()
         states[`game`]();
     }
 }
-states[`pause`] = function(){
-    o.forEach(function (i){
+
+states[`pause`] = function () {
+    o.forEach(function (i) {
         i.draw()
     })
     scoreBoard[0].innerHTML = `Score: ${player.score}`;
@@ -70,7 +108,7 @@ states[`pause`] = function(){
     {
         currentState =`game`
     }
-   
+
 }
 states[`game`] = function()
 {
@@ -80,12 +118,10 @@ states[`game`] = function()
         return;
     }
 
-    if(keys[`ArrowLeft`])
-    {
+    if (keys[`ArrowLeft`]) {
         player.vx += -1
     }
-    if(keys[`ArrowRight`])
-    {
+    if (keys[`ArrowRight`]) {
         player.vx += 1
     }
 
@@ -95,14 +131,12 @@ states[`game`] = function()
     player.vy += 1;
     player.move();
 
-    if(player.y > c.height +player.h)
-    {
+    if (player.y > c.height + player.h) {
         currentState = `death`
     }
-    plat.forEach((i)=>{
+    plat.forEach((i) => {
         i.move()
-        if(i.y > c.height + i.h)
-        {
+        if (i.y > c.height + i.h) {
             i.y = -i.h
             i.x = rand(0, c.width)
         }
@@ -118,8 +152,7 @@ states[`game`] = function()
             scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
         }
 
-        while(i.collidePoint(player.bottom()) && player.vy > 1)
-        {
+        while (i.collidePoint(player.bottom()) && player.vy > 1) {
             console.log(0)
             player.y--;
             player.vy = -30;
@@ -128,34 +161,30 @@ states[`game`] = function()
         }
     })
 
-    while(ground.collidePoint(player.bottom()))
-    {
+    while (ground.collidePoint(player.bottom())) {
         console.log(0)
         player.y--;
         player.vy = -30;
     }
-    while(player.x < 0 + player.w/2)
-    {
+    while (player.x < 0 + player.w / 2) {
         player.x++;
         player.vx = 30;
     }
-   while(player.x > c.width - player.w/2)
-    {
+    while (player.x > c.width - player.w / 2) {
         player.x--;
         player.vx = -25;
     }
-    
+
 
     //draw the objects (Uses the array forEach function where i is the object stored in the o Array)
-    o.forEach(function (i){
+    o.forEach(function (i) {
         i.draw()
     })
     scoreBoard[0].innerHTML = `Score: ${player.score}`;
     scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
 }
 
-function rand(low, high)
-{
+function rand(low, high) {
     return Math.random() * (high - low) + low;
 }
 
