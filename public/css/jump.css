@@ -29,9 +29,14 @@ main {
     height: 50px;
     width: 800px;
 }
-
-#score div {
+#score div{
+    display :flex;
+    justify-content: space-between;
+    height: 50px;
+    width: 200px;
     position: relative;
+
+
 }
 
 #score div p {

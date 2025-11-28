@@ -55,18 +55,30 @@ app.get('/highscores', async (req, res) => {
   });
 
 app.post('/highscores', async (req, res) => { 
-    var oldData =  await readFile(`./data/highscores.json`)
-    var newData =  await JSON.parse(oldData)
-    newData.push(req.body)
-    const jsonString = JSON.stringify(newData);
-    await fs.writeFile('./data/highscores.json', jsonString, err => {
-      if (err) {
-          console.log('Error writing file', err)
-      } else {
-          console.log('Successfully wrote file')
-      }
-    });
-    res.send(jsonString);
+    try {
+      var oldData =  await readFile(`./data/highscores.json`);
+      var existingScores = JSON.parse(oldData);
+      var newScore = req.body;
+
+      // Add new score to array
+      existingScores.push(newScore);
+      
+      // Sort by score descending
+      existingScores.sort((a, b) => b.score - a.score);
+      
+      // Keep only top 5
+      var topScores = existingScores.slice(0, 5);
+      
+      const jsonString = JSON.stringify(topScores, null, 2);
+      
+      // Write back to file
+      await writeFile('./data/highscores.json', jsonString);
+      
+      res.json(topScores);
+    } catch (err) {
+      console.error('Error posting highscore:', err);
+      res.status(500).json({error: 'Failed to save highscore'});
+    }
 });
 
 //Start up the server on port 3000.
@@ -74,5 +86,3 @@ var port = process.env.PORT || 3000
 app.listen(port, ()=>{
     console.log("Server Running at Localhost:3000")
 })
-
-//[{"name":0,"score":0}]'

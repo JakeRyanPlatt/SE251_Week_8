@@ -43,14 +43,19 @@
             <div id="score">
                 <div>
                     <p class="score">score: 0</p>
-                    <!--<p class="anim">0</p>-->
                 </div>
                 <div>
                     <p class="score">highscore: 0</p>
-                    <!--<p class="anim">0</p>-->
                 </div>
             </div>
             <canvas id="jump" width="800" height="800"></canvas>
+        </section>
+        
+        <section id="leaderboard" style="display: none; margin-top: 20px;">
+            <h2>Top 5 Scores</h2>
+            <ol id="highscores-list">
+            </ol>
+            <button onclick="playAgain()">Play Again</button>
         </section>
     </main>
 
