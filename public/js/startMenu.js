@@ -35,10 +35,11 @@ window.addEventListener("load", () =>{
     });
 
     //Back Buttons
-    backButtons.addEventListener("click", (e) =>{
+    backButtons.forEach(button =>{
         button.addEventListener("click", () =>{
             optionsPanel.classList.add("hidden");
             scorePanel.classList.add("hidden");
+            startMenu.classList.remove("hidden");
         });
     
     });
