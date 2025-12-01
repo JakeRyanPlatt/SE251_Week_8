@@ -1,5 +1,9 @@
 [
   {
+    "player": "Bob",
+    "score": 15
+  },
+  {
     "player": "JAMES",
     "score": 14
   },
@@ -12,11 +16,7 @@
     "score": 8
   },
   {
-    "player": "JAY",
-    "score": 5
-  },
-  {
-    "player": "JACK",
-    "score": 5
+    "player": "D",
+    "score": 6
   }
 ]

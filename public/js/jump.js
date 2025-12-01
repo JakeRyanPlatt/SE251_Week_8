@@ -45,8 +45,6 @@ function init() {
         player.fill = boxColorInput.value;
     }
 
-
-
     if (bgSelect) {
         if (bgSelect.value === 'rainy') {
             document.body.classList.add('rainy-forest');
@@ -204,6 +202,41 @@ async function loadLeaderboard() {
         });
     } catch (error) {
         console.error('Error loading leaderboard:', error);
+    }
+}
+
+    // Show leaderboard screen
+async function loadLeaderboardInMenu(){
+const leaderboardList  = document.getElementById('highscore-list'); //defined at top for scope
+    try {
+        const response = await fetch('/highscores');
+        const scores = await response.json();
+        leaderboardList.innerHTML = '';
+        
+        // Check if scores is an array
+
+        if (Array.isArray(scores) && scores.length > 0) {
+            leaderboardList.innerHTML = '';
+            scores.forEach((score, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${index++}.${score.player} - ${score.score}`;
+                leaderboardList.appendChild(li);
+            });
+        } else {
+            // Empty array, no scores yet
+                const li = document.createElement('li');
+                li.textContent = `${index + 1}. ${score.player} - ${score.score}`;
+                leaderboardList.appendChild(li);
+        }
+ 
+} catch (error) {
+    console.error('Error Loading Leaderboard:', error);
+   // local storage if server is not running
+    leaderboardList.innerHTML = '';
+    const highScore = localStorage.getItem('highscore') || 0;
+    const li = document.createElement('li');
+    li.textContent = `Your High Score: ${highScore}`;
+    leaderboardList.appendChild(li);
     }
 }
 

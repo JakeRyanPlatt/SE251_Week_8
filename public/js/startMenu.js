@@ -12,6 +12,8 @@ window.addEventListener("load", () =>{
 
     const backButtons = document.querySelectorAll(".back-btn")
 
+
+
     //Start Game
     startBtn.addEventListener("click", () =>{
         
@@ -30,8 +32,15 @@ window.addEventListener("load", () =>{
     //Scoreboard
     scoreBtn.addEventListener("click", () =>{
         
-        scorePanel.classList.remove("hidden");
-        optionsPanel.classList.add("hidden");
+    scorePanel.classList.remove("hidden");
+    optionsPanel.classList.add("hidden");
+    // Show leaderboard screen
+    document.getElementById('score-btn').addEventListener('click', function() {
+        document.getElementById('score-panel').classList.remove('hidden');
+        loadLeaderboardInMenu();
+    });
+
+        
     });
 
     //Back Buttons

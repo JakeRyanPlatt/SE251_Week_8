@@ -1,7 +1,7 @@
-const express = require(`express`)
+const express = require('express')
 const app = express()
-const fs = require(`fs`);
-const hbs = require(`hbs`);
+const fs = require('fs');
+const hbs = require('hbs');
 app.set('view engine', 'hbs');
 
 app.use(express.json())
@@ -44,7 +44,7 @@ const writeFile = (path, data)=> {
     })
   }
 
-app.get(`/`, (req, res)=>{
+app.get('/', (req, res)=>{
   const filePath = path.join(__dirname, `public`, `index.html`)
   res.sendFile(filePath);
 })
