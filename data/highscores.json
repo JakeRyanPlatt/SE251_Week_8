@@ -1,5 +1,9 @@
 [
   {
+    "player": "King Jake",
+    "score": 22
+  },
+  {
     "player": "Bob",
     "score": 15
   },
@@ -8,15 +12,11 @@
     "score": 14
   },
   {
-    "player": "JOHN",
-    "score": 10
+    "player": "Lucas",
+    "score": 14
   },
   {
-    "player": "JAke",
-    "score": 8
-  },
-  {
-    "player": "D",
-    "score": 6
+    "player": "Twelvbe",
+    "score": 12
   }
 ]

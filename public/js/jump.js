@@ -2,10 +2,7 @@
 
 let highScore = localStorage.getItem(`highscore`);
 let score = localStorage.getItem(`score`);
-if(highScore == null)
-{
-    highScore = 0;
-}
+
 var c = document.querySelector(`#jump`);
 var ctx = c.getContext(`2d`);
 var states = [];
@@ -34,12 +31,15 @@ window.startGame = function () {
     init();
 }
 
-
-
 function init() {
+    console.log("Initializing game...");
     // Apply Options
     const boxColorInput = document.getElementById('box-color');
     const bgSelect = document.getElementById('bg-select');
+    // establish initial platform positions
+    plat[0].y = -c.height / 2;
+    plat[1].y = -c.height;
+    ground.y = c.height;
 
     if (boxColorInput) {
         player.fill = boxColorInput.value;
@@ -65,12 +65,14 @@ function init() {
     player.vx = 0;
     player.vy = 0;
     player.score = 0;
+    player.highscore = localStorage.getItem(`highscore`);
 
     scoreBoard = document.querySelectorAll(`#score div p`);
     currentState = `game`;
     //timer to make the game run at 60fps
     clearInterval(timer);
     timer = setInterval(main, 1000 / 60);
+
 }
 
 window.stopGame = function () {
@@ -85,14 +87,14 @@ states[`death`] = function()
     
     const playerName = prompt('Game Over! Enter your name for the leaderboard:');
     
-    if (playerName) {
+    if (playerName != null && playerName.trim() !== '') {
         submitScore(playerName, player.score).then(() => {
             loadLeaderboard();
             showLeaderboard();
         });
     } else {
         window.location = `index.html`;
-        states[`game`]();
+        currentState = `menu`;
     }
 }
 
@@ -104,7 +106,7 @@ states[`pause`] = function () {
     scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
     if(keys[`Escape`])
     {
-        currentState =`game`
+        currentState =`game`;
     }
 
 }
@@ -122,6 +124,13 @@ states[`game`] = function()
     if (keys[`ArrowRight`]) {
         player.vx += 1
     }
+    if (keys[`a`]) {
+        player.vx += -1
+    }
+    if (keys[`d`]) {
+        player.vx += 1
+    }
+
 
     //friction
     player.vx *= .87
@@ -138,29 +147,29 @@ states[`game`] = function()
             i.y = -i.h
             i.x = rand(0, c.width)
         }
-        
+// scoring on collide is off by 1 for high score counter
         if(i.collidePoint(player.bottom()) && player.vy > 1){
+            
+        }
+
+        while (i.collidePoint(player.bottom()) && player.vy > 1) {
+            player.y--;
+            player.vy = -30;
+            ground.x = 10000;
+            player.score += 1;
             if(player.score > player.highscore)
             {
                 player.highscore = player.score;
                 localStorage.setItem(`highscore`, player.highscore);
             }
+
             localStorage.setItem(`score`, player.score);
             scoreBoard[0].innerHTML = `Score: ${player.score}`;
             scoreBoard[1].innerHTML = `High Score: ${player.highscore}`;
         }
-
-        while (i.collidePoint(player.bottom()) && player.vy > 1) {
-            console.log(0)
-            player.y--;
-            player.vy = -30;
-            ground.x = 10000;
-            player.score += 1;
-        }
     })
 
     while (ground.collidePoint(player.bottom())) {
-        console.log(0)
         player.y--;
         player.vy = -30;
     }
@@ -233,7 +242,7 @@ const leaderboardList  = document.getElementById('highscore-list'); //defined at
     console.error('Error Loading Leaderboard:', error);
    // local storage if server is not running
     leaderboardList.innerHTML = '';
-    const highScore = localStorage.getItem('highscore') || 0;
+    const highScore = localStorage.getItem('highscore');
     const li = document.createElement('li');
     li.textContent = `Your High Score: ${highScore}`;
     leaderboardList.appendChild(li);
@@ -269,7 +278,8 @@ function showLeaderboard() {
 function playAgain() {
     // Reset player
     player.score = 0;
-    player.highscore = localStorage.getItem(`highscore`) || 0;
+    player.highscore = localStorage.getItem(`highscore`); // Update highscore from localStorage, this should show only for the player
+    console.log(player.highscore);
     player.x = c.width/2;
     player.y = 0;
     player.vx = 0;
@@ -278,6 +288,8 @@ function playAgain() {
     // Reset platforms
     plat[0].y = -c.height/2;
     plat[1].y = -c.height;
+    ground.y = c.height;
+    ground.x = c.width/2;
     
     // Reset UI
     document.getElementById('game').style.display = 'block';

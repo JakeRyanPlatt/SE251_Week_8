@@ -12,3 +12,14 @@ document.addEventListener(`keydown`, (e)=>{
 document.addEventListener(`keyup`, (e)=>{
     keys[e.key]=false;
 })
+
+document.addEventListener(`keydown`, (a)=>{
+    keys[a.key]=true;
+    console.log(a.key)
+})
+
+
+//keyup code
+document.addEventListener(`keyup`, (d)=>{
+    keys[d.key]=false;
+})
